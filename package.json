@@ -9,8 +9,8 @@
   "devDependencies": {
     "@types/express": "^4.16.0",
     "@types/graphql": "^14.0.0",
-    "@types/isomorphic-fetch": "0.0.34",
     "@types/jest": "~23.3.1",
+    "@types/jwt-decode": "^2.2.1",
     "@types/node": "~8.10.25",
     "jest": "~23.5.0",
     "nodemon": "^1.18.4",
@@ -38,6 +38,7 @@
   "license": "APLv2",
   "dependencies": {
     "apollo-link-http": "^1.5.5",
+    "apollo-server": "^2.1.0",
     "apollo-server-express": "^2.1.0",
     "express": "^4.16.3",
     "graphql": "^14.0.2",

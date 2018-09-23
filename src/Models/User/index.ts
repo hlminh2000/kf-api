@@ -9,7 +9,7 @@ import { createExecutableGen3Schema } from './Gen3Model';
 
 const linkTypeDefs = `
   extend type UserModel {
-    savedQuery: [SavedQuery]
+    savedQueries: [SavedQuery]
     gen3Account: Gen3Account
   }
   extend type SavedQuery {
@@ -31,11 +31,11 @@ export const createUserSchema = async () => {
     schemas: [personaSchema, shortUrlSchema, gen3Schema, linkTypeDefs],
     resolvers: {
       UserModel: {
-        savedQuery: {
+        savedQueries: {
           fragment: `... on UserModel { egoId }`,
           resolve({ egoId }, _, context, info) {
             return info.mergeInfo.delegateToSchema({
-              schema: mergedUserSchema,
+              schema: shortUrlSchema,
               operation: 'query',
               fieldName: 'savedQueriesByUser',
               args: {

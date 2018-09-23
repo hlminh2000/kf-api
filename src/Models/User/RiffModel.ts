@@ -1,16 +1,16 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import fetch from 'node-fetch';
-import * as decode from 'jwt-decode';
-import { EgoJwt } from './EgoModel';
+import { ForbiddenError } from 'apollo-server';
+import { isRightUser } from './EgoModel';
 
 import config from '../../config';
 
 const { SHORTURL_API } = config;
 
-const fetchSavedQuery = ({ userId, egoJWT }) =>
+const fetchSavedQuery = ({ userId, egoJwt }) =>
   fetch(`${SHORTURL_API}/user/${userId}`, {
     headers: {
-      Authorization: `Bearer ${egoJWT}`,
+      Authorization: `Bearer ${egoJwt}`,
     },
   }).then(res => res.json());
 
@@ -45,12 +45,11 @@ export const createExecutableShortUrlSchema = async () => {
   `;
   const resolvers = {
     Query: {
-      savedQueriesByUser: (_, { userId }, { egoJWT }) => {
-        const { sub }: EgoJwt = decode(egoJWT);
-        if (sub === userId) {
-          return fetchSavedQuery({ userId, egoJWT });
+      savedQueriesByUser: (_, { userId }, { egoJwt }) => {
+        if (isRightUser({ egoJwt, userId })) {
+          return fetchSavedQuery({ userId, egoJwt });
         } else {
-          throw new Error();
+          throw new ForbiddenError(`Cannot see someone else's saved queries`);
         }
       },
     },

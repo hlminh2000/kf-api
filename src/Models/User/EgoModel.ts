@@ -1,3 +1,5 @@
+import * as decode from 'jwt-decode';
+
 export enum EgoStatus {
   Approved = 'Approved',
   Disabled = 'Disabled',
@@ -34,3 +36,14 @@ export interface EgoJwt {
   aud: Array<string>;
   context: EgoJwtContext;
 }
+
+export const isRightUser = ({
+  userId,
+  egoJwt,
+}: {
+  userId: string;
+  egoJwt: string;
+}): boolean => {
+  const { sub }: EgoJwt = decode(egoJwt);
+  return sub === userId;
+};

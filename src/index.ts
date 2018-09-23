@@ -3,6 +3,11 @@ import { ApolloServer } from 'apollo-server-express';
 import { mergeSchemas } from 'graphql-tools';
 import { createUserSchema } from './Models/User';
 
+export interface QueryContext {
+  authorization: string;
+  egoJwt: string;
+}
+
 const initialize = async () => {
   const app = express();
 
@@ -12,13 +17,13 @@ const initialize = async () => {
 
   const server = new ApolloServer({
     schema: mergedSchema,
-    context: ({ req }) => {
+    context: ({ req }): QueryContext => {
       const {
         headers: { authorization },
       } = req;
       return {
         authorization: authorization,
-        egoJWT: authorization.split('Bearer ').join(''),
+        egoJwt: authorization.split('Bearer ').join(''),
       };
     },
   });
