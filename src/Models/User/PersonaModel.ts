@@ -1,18 +1,11 @@
-import * as express from 'express';
-import { ApolloServer, gql } from 'apollo-server-express';
-import {
-  makeExecutableSchema,
-  mergeSchemas,
-  makeRemoteExecutableSchema,
-  introspectSchema,
-} from 'graphql-tools';
+import { makeRemoteExecutableSchema, introspectSchema } from 'graphql-tools';
 import { HttpLink } from 'apollo-link-http';
 import fetch from 'node-fetch';
 import config from '../../config';
 
 const { PERSONA_API, EGO_JWT_SECRET } = config;
 
-const createFetcher = ({ egoSecret }) => (url, rest) => {
+const createFetcher = ({ egoSecret }) => (_, rest) => {
   return fetch(`${PERSONA_API}/graphql`, {
     method: 'POST',
     ...rest,

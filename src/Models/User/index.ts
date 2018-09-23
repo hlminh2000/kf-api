@@ -1,15 +1,5 @@
-import * as express from 'express';
-import { ApolloServer, gql } from 'apollo-server-express';
-import {
-  makeExecutableSchema,
-  mergeSchemas,
-  makeRemoteExecutableSchema,
-  introspectSchema,
-} from 'graphql-tools';
-import { HttpLink } from 'apollo-link-http';
-import fetch from 'node-fetch';
+import { mergeSchemas } from 'graphql-tools';
 
-import config from '../../config';
 import {
   createExecutableUserMetadataSchema,
   personaFetcher,
@@ -30,7 +20,7 @@ const linkTypeDefs = `
   }
 `;
 
-const createUserSchema = async () => {
+export const createUserSchema = async () => {
   const [personaSchema, shortUrlSchema, gen3Schema] = await Promise.all([
     createExecutableUserMetadataSchema(),
     createExecutableShortUrlSchema(),
@@ -43,7 +33,7 @@ const createUserSchema = async () => {
       UserModel: {
         savedQuery: {
           fragment: `... on UserModel { egoId }`,
-          resolve({ egoId }, args, context, info) {
+          resolve({ egoId }, _, context, info) {
             return info.mergeInfo.delegateToSchema({
               schema: mergedUserSchema,
               operation: 'query',
@@ -58,7 +48,7 @@ const createUserSchema = async () => {
         },
         gen3Account: {
           fragment: `... on UserModel { egoId }`,
-          resolve({ egoId }, args, context, info) {
+          resolve({ egoId }, _, context, info) {
             return info.mergeInfo.delegateToSchema({
               schema: gen3Schema,
               operation: 'query',
@@ -75,7 +65,7 @@ const createUserSchema = async () => {
       SavedQuery: {
         user: {
           fragment: `... on SavedQuery { uid }`,
-          resolve({ uid }, args, context, info) {
+          resolve({ uid }, _, context, info) {
             return info.mergeInfo.delegateToSchema({
               schema: mergedUserSchema,
               operation: 'query',
@@ -127,5 +117,3 @@ const createUserSchema = async () => {
 
   return mergedUserSchema;
 };
-
-export const createUserSchema = createUserSchema;

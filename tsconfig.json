@@ -30,7 +30,8 @@
       "es2015.reflect",
       "es2015.symbol",
       "es2015.symbol.wellknown",
-      "esnext.asynciterable"
+      "es2017",
+      "esnext"
     ]
   },
   "include": ["src/**/*", "__tests__/**/*"]

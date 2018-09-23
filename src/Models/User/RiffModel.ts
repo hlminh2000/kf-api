@@ -1,13 +1,7 @@
-import * as express from 'express';
-import { ApolloServer, gql } from 'apollo-server-express';
-import {
-  makeExecutableSchema,
-  mergeSchemas,
-  makeRemoteExecutableSchema,
-  introspectSchema,
-} from 'graphql-tools';
-import { HttpLink } from 'apollo-link-http';
+import { makeExecutableSchema } from 'graphql-tools';
 import fetch from 'node-fetch';
+import * as decode from 'jwt-decode';
+import { EgoJwt } from './EgoModel';
 
 import config from '../../config';
 
@@ -51,8 +45,13 @@ export const createExecutableShortUrlSchema = async () => {
   `;
   const resolvers = {
     Query: {
-      savedQueriesByUser: (_, { userId }, { authorization, egoJWT }) => {
-        return fetchSavedQuery({ userId, egoJWT });
+      savedQueriesByUser: (_, { userId }, { egoJWT }) => {
+        const { sub }: EgoJwt = decode(egoJWT);
+        if (sub === userId) {
+          return fetchSavedQuery({ userId, egoJWT });
+        } else {
+          throw new Error();
+        }
       },
     },
   };

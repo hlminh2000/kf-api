@@ -1,24 +1,4 @@
-import * as express from 'express';
-import { ApolloServer, gql } from 'apollo-server-express';
-import {
-  makeExecutableSchema,
-  mergeSchemas,
-  makeRemoteExecutableSchema,
-  introspectSchema,
-} from 'graphql-tools';
-import { HttpLink } from 'apollo-link-http';
-import fetch from 'node-fetch';
-
-import config from '../../config';
-
-const { SHORTURL_API, GEN3_INTEGRATION_ROOT } = config;
-
-const fetchSavedQuery = ({ userId, egoJWT }) =>
-  fetch(`${SHORTURL_API}/user/${userId}`, {
-    headers: {
-      Authorization: `Bearer ${egoJWT}`,
-    },
-  }).then(res => res.json());
+import { makeExecutableSchema } from 'graphql-tools';
 
 const sample = {
   google: {
@@ -58,7 +38,7 @@ export const createExecutableGen3Schema = async () => {
   `;
   const resolvers = {
     Query: {
-      gen3AccountByUser: (_, { userId }, { authorization, egoJWT }) => ({
+      gen3AccountByUser: () => ({
         ...sample,
         projects: Object.entries(sample.projects).reduce(
           (acc, [key, value]) => [...acc, { id: key, accessLevels: value }],
