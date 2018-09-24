@@ -7,7 +7,13 @@ import config from '../../config';
 
 const { SHORTURL_API } = config;
 
-const fetchSavedQuery = ({ userId, egoJwt }) =>
+const fetchSavedQuery = ({
+  userId,
+  egoJwt,
+}: {
+  userId: string;
+  egoJwt: string;
+}) =>
   fetch(`${SHORTURL_API}/user/${userId}`, {
     headers: {
       Authorization: `Bearer ${egoJwt}`,
