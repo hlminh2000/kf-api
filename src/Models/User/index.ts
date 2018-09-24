@@ -4,6 +4,10 @@ import {
   createExecutableUserMetadataSchema,
   personaFetcher,
 } from './PersonaModel';
+import {
+  createExecutableSearchModel,
+  // fetcher as arrangerFetcher,
+} from './ArrangerModel';
 import { createExecutableShortUrlSchema } from './RiffModel';
 import { createExecutableGen3Schema } from './Gen3Model';
 
@@ -21,14 +25,29 @@ const linkTypeDefs = `
 `;
 
 export const createUserSchema = async () => {
-  const [personaSchema, shortUrlSchema, gen3Schema] = await Promise.all([
+  const [
+    personaSchema,
+    shortUrlSchema,
+    gen3Schema,
+    arrangerSchema,
+  ] = await Promise.all([
     createExecutableUserMetadataSchema(),
     createExecutableShortUrlSchema(),
     createExecutableGen3Schema(),
+    createExecutableSearchModel(),
   ]);
 
+  const onTypeConflict = (left, right) => left;
+
   const mergedUserSchema = mergeSchemas({
-    schemas: [personaSchema, shortUrlSchema, gen3Schema, linkTypeDefs],
+    schemas: [
+      personaSchema,
+      shortUrlSchema,
+      gen3Schema,
+      arrangerSchema,
+      linkTypeDefs,
+    ],
+    onTypeConflict: onTypeConflict,
     resolvers: {
       UserModel: {
         savedQueries: {
