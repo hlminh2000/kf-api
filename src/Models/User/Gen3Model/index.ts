@@ -4,6 +4,7 @@ import { ForbiddenError } from 'apollo-server';
 import * as decode from 'jwt-decode';
 
 import config from '../../../config';
+import { QueryContext } from '../../../index';
 import { isRightUser } from '../EgoModel';
 import {
   Gen3UserModel,
@@ -50,7 +51,7 @@ export const createExecutableGen3Schema = async () => {
   `;
   const resolvers = {
     Query: {
-      gen3AccountByUser: async (_, { userId }, { egoJwt }) => {
+      gen3AccountByUser: async (_, { userId }, { egoJwt }: QueryContext) => {
         if (isRightUser({ egoJwt, userId })) {
           const { access_token } = await fetchGen3Token({ egoJwt });
           const decodedData = decode(access_token) as {

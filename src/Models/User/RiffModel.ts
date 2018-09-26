@@ -1,9 +1,10 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import fetch from 'node-fetch';
 import { ForbiddenError } from 'apollo-server';
-import { isRightUser } from './EgoModel';
 
+import { isRightUser } from './EgoModel';
 import config from '../../config';
+import { QueryContext } from '../../index';
 
 const { SHORTURL_API } = config;
 
@@ -51,7 +52,7 @@ export const createExecutableShortUrlSchema = async () => {
   `;
   const resolvers = {
     Query: {
-      savedQueriesByUser: (_, { userId }, { egoJwt }) => {
+      savedQueriesByUser: (_, { userId }, { egoJwt }: QueryContext) => {
         if (isRightUser({ egoJwt, userId })) {
           return fetchSavedQuery({ userId, egoJwt });
         } else {
