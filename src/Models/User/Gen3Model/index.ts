@@ -14,7 +14,11 @@ import {
 
 const { GEN3_INTEGRATION_ROOT } = config;
 
-const fetchGen3Token = ({ egoJwt }): Promise<Gen3IntegrationTokenData> => {
+const fetchGen3Token = ({
+  egoJwt,
+}: {
+  egoJwt: string;
+}): Promise<Gen3IntegrationTokenData> => {
   return fetch(`${GEN3_INTEGRATION_ROOT}/token`, {
     headers: {
       Authorization: `Bearer ${egoJwt}`,
