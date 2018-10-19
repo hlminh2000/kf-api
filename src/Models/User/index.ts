@@ -38,8 +38,8 @@ export const createUserSchema = async () => {
       UserModel: {
         savedQueries: {
           fragment: `... on UserModel { egoId }`,
-          resolve({ egoId }, _, context, info) {
-            return info.mergeInfo.delegateToSchema({
+          resolve: ({ egoId }, _, context, info) =>
+            info.mergeInfo.delegateToSchema({
               schema: shortUrlSchema,
               operation: 'query',
               fieldName: 'savedQueriesByUser',
@@ -48,13 +48,12 @@ export const createUserSchema = async () => {
               },
               context,
               info,
-            });
-          },
+            }),
         },
         gen3Account: {
           fragment: `... on UserModel { egoId }`,
-          resolve({ egoId }, _, context, info) {
-            return info.mergeInfo.delegateToSchema({
+          resolve: ({ egoId }, _, context, info) =>
+            info.mergeInfo.delegateToSchema({
               schema: gen3Schema,
               operation: 'query',
               fieldName: 'gen3AccountByUser',
@@ -63,15 +62,14 @@ export const createUserSchema = async () => {
               },
               context,
               info,
-            });
-          },
+            }),
         },
       },
       SavedQuery: {
         user: {
           fragment: `... on SavedQuery { uid }`,
-          resolve({ uid }, _, context, info) {
-            return info.mergeInfo.delegateToSchema({
+          resolve: ({ uid }, _, context, info) =>
+            info.mergeInfo.delegateToSchema({
               schema: mergedUserSchema,
               operation: 'query',
               fieldName: 'userByEgoId',
@@ -80,8 +78,7 @@ export const createUserSchema = async () => {
               },
               context,
               info,
-            });
-          },
+            }),
         },
       },
       Query: {
