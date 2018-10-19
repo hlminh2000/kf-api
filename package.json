@@ -1,7 +1,7 @@
 {
-  "name": "node-typescript-boilerplate",
+  "name": "kf-api",
   "version": "0.0.0",
-  "description": "Minimalistic boilerplate to quick-start Node.js development in TypeScript.",
+  "description": "Gateway API for the Kids First portal's microservice custer",
   "engineStrict": true,
   "engines": {
     "node": ">= 8.9.0"
@@ -35,7 +35,7 @@
     "watch:run": "nodemon ./build/src"
   },
   "author": "Minh Ha",
-  "license": "APLv2",
+  "license": "",
   "dependencies": {
     "apollo-link-http": "^1.5.5",
     "apollo-server": "^2.1.0",
