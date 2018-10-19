@@ -1,14 +1,9 @@
 import { mergeSchemas } from 'graphql-tools';
-import * as URL from 'url';
 
 import {
   createExecutableUserMetadataSchema,
   personaFetcher,
 } from './PersonaModel';
-import {
-  createExecutableSearchModel,
-  // fetcher as arrangerFetcher,
-} from './ArrangerModel';
 import { createExecutableShortUrlSchema } from './RiffModel';
 import { createExecutableGen3Schema } from './Gen3Model';
 
@@ -19,7 +14,6 @@ const linkTypeDefs = `
   }
   extend type SavedQuery {
     user: UserModel
-    files: file
   }
   type Query {
     userByEgoId(id: ID!): UserModel
@@ -27,28 +21,16 @@ const linkTypeDefs = `
 `;
 
 export const createUserSchema = async () => {
-  const [
-    personaSchema,
-    shortUrlSchema,
-    gen3Schema,
-    arrangerSchema,
-  ] = await Promise.all([
+  const [personaSchema, shortUrlSchema, gen3Schema] = await Promise.all([
     createExecutableUserMetadataSchema(),
     createExecutableShortUrlSchema(),
     createExecutableGen3Schema(),
-    createExecutableSearchModel(),
   ]);
 
   const onTypeConflict = (left, right) => left;
 
   const mergedUserSchema = mergeSchemas({
-    schemas: [
-      personaSchema,
-      shortUrlSchema,
-      gen3Schema,
-      arrangerSchema,
-      linkTypeDefs,
-    ],
+    schemas: [personaSchema, shortUrlSchema, gen3Schema, linkTypeDefs],
     onTypeConflict: onTypeConflict,
     resolvers: {
       UserModel: {
@@ -93,26 +75,6 @@ export const createUserSchema = async () => {
               fieldName: 'userByEgoId',
               args: {
                 id: uid,
-              },
-              context,
-              info,
-            });
-          },
-        },
-        files: {
-          fragment: `... on SavedQuery { content { longUrl } }`,
-          resolve({ content: { longUrl } }, args, context, info) {
-            const { query } = URL.parse(longUrl);
-            const decodedQuery = decodeURIComponent(query);
-            const sqonString = decodedQuery.split('sqon=').join('');
-            const sqon = JSON.parse(sqonString);
-            return info.mergeInfo.delegateToSchema({
-              schema: mergedUserSchema,
-              operation: 'query',
-              fieldName: 'file',
-              args: {
-                filters: sqon,
-                ...args,
               },
               context,
               info,
