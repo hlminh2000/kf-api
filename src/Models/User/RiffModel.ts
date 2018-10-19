@@ -1,6 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import fetch from 'node-fetch';
-import { ForbiddenError } from 'apollo-server';
+import { ForbiddenError, gql } from 'apollo-server';
 
 import { isRightUser } from './EgoModel';
 import config from '../../config';
@@ -22,7 +22,7 @@ const fetchSavedQuery = ({
   }).then(res => res.json());
 
 export const createExecutableShortUrlSchema = async () => {
-  const typeDefs = `
+  const typeDefs = gql`
     type QueryContent {
       File: Int
       Participants: Int
@@ -47,9 +47,10 @@ export const createExecutableShortUrlSchema = async () => {
     }
 
     type Query {
-      savedQueriesByUser(userId:ID!): [SavedQuery]
+      savedQueriesByUser(userId: ID!): [SavedQuery]
     }
   `;
+
   const resolvers = {
     Query: {
       savedQueriesByUser: (_, { userId }, { egoJwt }: QueryContext) => {

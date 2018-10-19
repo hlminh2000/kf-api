@@ -1,4 +1,6 @@
 import { mergeSchemas } from 'graphql-tools';
+import { gql } from 'apollo-server-express';
+import { print } from 'graphql/language/printer';
 
 import {
   createExecutableUserMetadataSchema,
@@ -7,7 +9,7 @@ import {
 import { createExecutableShortUrlSchema } from './RiffModel';
 import { createExecutableGen3Schema } from './Gen3Model';
 
-const linkTypeDefs = `
+const linkTypeDefs = gql`
   extend type UserModel {
     savedQueries: [SavedQuery]
     gen3Account: Gen3Account
@@ -30,7 +32,7 @@ export const createUserSchema = async () => {
   const onTypeConflict = (left, right) => left;
 
   const mergedUserSchema = mergeSchemas({
-    schemas: [personaSchema, shortUrlSchema, gen3Schema, linkTypeDefs],
+    schemas: [personaSchema, shortUrlSchema, gen3Schema, print(linkTypeDefs)],
     onTypeConflict: onTypeConflict,
     resolvers: {
       UserModel: {

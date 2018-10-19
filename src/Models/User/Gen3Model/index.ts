@@ -1,6 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import fetch from 'node-fetch';
-import { ForbiddenError } from 'apollo-server';
+import { ForbiddenError, gql } from 'apollo-server';
 import * as decode from 'jwt-decode';
 
 import config from '../../../config';
@@ -37,20 +37,20 @@ const gen3UserToGraphql = (
 });
 
 export const createExecutableGen3Schema = async () => {
-  const typeDefs = `
+  const typeDefs = gql`
     type Gen3AccountProject {
       id: ID!
       accessLevels: [String]
     }
 
     type Gen3Account {
-      is_admin: Boolean,
-      name: String,
+      is_admin: Boolean
+      name: String
       projects: [Gen3AccountProject]
     }
 
     type Query {
-      gen3AccountByUser(userId:String!): Gen3Account
+      gen3AccountByUser(userId: ID!): Gen3Account
     }
   `;
   const resolvers = {
