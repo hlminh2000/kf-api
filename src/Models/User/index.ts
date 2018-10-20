@@ -8,6 +8,7 @@ import {
 } from './PersonaModel';
 import { createExecutableShortUrlSchema } from './RiffModel';
 import { createExecutableGen3Schema } from './Gen3Model';
+import { createExecutableSearchModel } from './ArrangerModel';
 
 const linkTypeDefs = gql`
   extend type UserModel {
@@ -23,16 +24,28 @@ const linkTypeDefs = gql`
 `;
 
 export const createUserSchema = async () => {
-  const [personaSchema, shortUrlSchema, gen3Schema] = await Promise.all([
+  const [
+    personaSchema,
+    shortUrlSchema,
+    gen3Schema,
+    arrangerModel,
+  ] = await Promise.all([
     createExecutableUserMetadataSchema(),
     createExecutableShortUrlSchema(),
     createExecutableGen3Schema(),
+    createExecutableSearchModel(),
   ]);
 
   const onTypeConflict = (left, right) => left;
 
   const mergedUserSchema = mergeSchemas({
-    schemas: [personaSchema, shortUrlSchema, gen3Schema, print(linkTypeDefs)],
+    schemas: [
+      personaSchema,
+      shortUrlSchema,
+      gen3Schema,
+      arrangerModel,
+      print(linkTypeDefs),
+    ],
     onTypeConflict: onTypeConflict,
     resolvers: {
       UserModel: {
