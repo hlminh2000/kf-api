@@ -20,6 +20,11 @@ const linkTypeDefs = gql`
   }
   type Query {
     userByEgoId(id: ID!): UserModel
+    fileAgg(
+      filters: JSON
+      include_missing: Boolean
+      aggregations_filter_themselves: Boolean
+    ): fileAggregations
   }
 `;
 
@@ -65,8 +70,8 @@ export const createUserSchema = async () => {
         },
         gen3Account: {
           fragment: `... on UserModel { egoId }`,
-          resolve: ({ egoId }, _, context, info) =>
-            info.mergeInfo.delegateToSchema({
+          resolve: ({ egoId }, _, context, info) => {
+            return info.mergeInfo.delegateToSchema({
               schema: gen3Schema,
               operation: 'query',
               fieldName: 'gen3AccountByUser',
@@ -75,7 +80,8 @@ export const createUserSchema = async () => {
               },
               context,
               info,
-            }),
+            });
+          },
         },
       },
       SavedQuery: {
@@ -125,6 +131,9 @@ export const createUserSchema = async () => {
               info,
             })
           );
+        },
+        fileAgg: async (_, { id }, context, info) => {
+          return {};
         },
       },
     },

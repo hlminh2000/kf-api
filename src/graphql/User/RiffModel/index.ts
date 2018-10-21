@@ -2,9 +2,9 @@ import { makeExecutableSchema } from 'graphql-tools';
 import fetch from 'node-fetch';
 import { ForbiddenError, gql } from 'apollo-server';
 
-import { isRightUser } from './EgoModel';
-import config from '../../config';
-import { QueryContext } from '../../index';
+import { isRightUser } from '../EgoModel';
+import config from '../../../config';
+import { QueryContext } from '../../../index';
 
 const { SHORTURL_API } = config;
 
