@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { mergeSchemas } from 'graphql-tools';
-import { createUserSchema } from './Models/User';
+import { createUserSchema } from './graphql/User';
 
 export interface QueryContext {
   authorization: string;

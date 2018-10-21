@@ -6,7 +6,7 @@ import {
 } from 'graphql-tools';
 import { HttpLink } from 'apollo-link-http';
 import fetch from 'node-fetch';
-import config from '../../config';
+import config from '../../../config';
 
 const { ARRANGER_API, ARRANGER_PROJECT_ID, EGO_JWT_SECRET } = config;
 
